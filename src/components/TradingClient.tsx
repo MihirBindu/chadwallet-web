@@ -22,7 +22,7 @@ export default function TradingClient({ address }: { address: string }) {
   const { data: tokensData } = useSWR<{ tokens: Token[] }>("/api/tokens", fetcher, {
     refreshInterval: 20000,
   });
-  const { data: detailData } = useSWR<{ token: Token; trades: Trade[]; holders: Holder[] }>(
+  const { data: detailData } = useSWR<{ token: Token | null; trades: Trade[]; holders: Holder[] }>(
     `/api/token/${address}`,
     fetcher,
     { refreshInterval: 10000 }
@@ -96,8 +96,14 @@ export default function TradingClient({ address }: { address: string }) {
                 <Stat label="Holders" value={token.holders ? token.holders.toLocaleString() : "—"} />
               </div>
             </>
-          ) : (
+          ) : detailData === undefined ? (
             <div className="h-[460px] flex items-center justify-center text-cw-text-dim">Loading token...</div>
+          ) : (
+            <div className="h-[460px] flex flex-col items-center justify-center gap-2 text-center text-cw-text-dim">
+              <span className="text-3xl">🔍</span>
+              <p className="font-semibold text-foreground">Token not found</p>
+              <p className="text-sm">This address doesn&apos;t match a known token.</p>
+            </div>
           )}
         </div>
 

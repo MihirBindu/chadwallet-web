@@ -16,7 +16,7 @@ const fetcher = (url: string) => fetch(url).then((r) => r.json());
 const RANGES = ["LIVE", "1D", "1W", "1M", "3M", "1Y", "5Y"];
 
 export default function TokenDetailClient({ address }: { address: string }) {
-  const { data: detail } = useSWR<{ token: Token; trades: Trade[]; holders: Holder[] }>(
+  const { data: detail } = useSWR<{ token: Token | null; trades: Trade[]; holders: Holder[] }>(
     `/api/token/${address}`,
     fetcher,
     { refreshInterval: 10000 }
@@ -35,9 +35,22 @@ export default function TokenDetailClient({ address }: { address: string }) {
   const trades = detail?.trades ?? [];
   const position = posData?.position ?? null;
 
-  if (!token) {
+  // `detail` undefined = still loading. `detail.token === null` = the request
+  // resolved and this address genuinely doesn't match a known token.
+  if (detail === undefined) {
     return (
       <div className="flex-1 flex items-center justify-center text-cw-text-dim">Loading...</div>
+    );
+  }
+  if (!token) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center gap-2 px-6 text-center">
+        <span className="text-4xl">🔍</span>
+        <h2 className="font-semibold text-lg">Token not found</h2>
+        <p className="text-cw-text-dim text-sm">
+          We couldn&apos;t find a token at this address. It may have been mistyped or isn&apos;t tracked yet.
+        </p>
+      </div>
     );
   }
 

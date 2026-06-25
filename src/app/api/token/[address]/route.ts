@@ -7,9 +7,11 @@ export async function GET(
 ) {
   const { address } = await params;
   const token = await getToken(address);
+  // `token: null` (vs. an absent response entirely, which means "still loading"
+  // on the client) lets callers distinguish "not found" from "loading".
   return NextResponse.json({
-    token,
-    trades: getMockTrades(address),
-    holders: getMockHolders(),
+    token: token ?? null,
+    trades: token ? getMockTrades(address) : [],
+    holders: token ? getMockHolders() : [],
   });
 }

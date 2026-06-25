@@ -73,17 +73,22 @@ export default function HomeClient() {
         </div>
       </div>
 
-      <div className="px-4 flex items-center gap-5 text-sm font-semibold border-b border-cw-border pb-3 mb-1 overflow-x-auto cw-scrollbar-none">
-        {TABS.map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`relative pb-0.5 transition ${tab === t ? "text-cw-green" : "text-cw-text-dim hover:text-foreground"}`}
-          >
-            {t}
-            {tab === t && <span className="absolute -bottom-[13px] left-0 right-0 h-0.5 rounded-full bg-cw-green" />}
-          </button>
-        ))}
+      <div className="relative border-b border-cw-border mb-1">
+        <div className="px-4 flex items-center gap-5 text-sm font-semibold pb-3 overflow-x-auto cw-scrollbar-none">
+          {TABS.map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`relative pb-0.5 shrink-0 transition ${tab === t ? "text-cw-green" : "text-cw-text-dim hover:text-foreground"}`}
+            >
+              {t}
+              {tab === t && <span className="absolute -bottom-[13px] left-0 right-0 h-0.5 rounded-full bg-cw-green" />}
+            </button>
+          ))}
+        </div>
+        {/* Edge fades hint that the tab row scrolls horizontally on narrow screens. */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-4 bg-gradient-to-r from-cw-navy to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-4 bg-gradient-to-l from-cw-navy to-transparent" />
       </div>
 
       {tab === "Memecoin" && (

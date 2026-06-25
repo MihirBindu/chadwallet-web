@@ -47,6 +47,9 @@ export async function getTrendingTokens(): Promise<Token[]> {
         query: `query { listRankedTokens(rankingType: TRENDING, limit: 12, networkFilter: [1399811149]) { items { address symbol name priceUSD change24 marketCap volume24 liquidity } } }`,
       }),
       cache: "no-store",
+      // Bounds a hung/slow Codex.io call so it can't block the whole page (e.g.
+      // /api/feed) indefinitely — falls through to the mock-data catch below.
+      signal: AbortSignal.timeout(5000),
     });
     if (!res.ok) return MOCK_TOKENS;
     const json = await res.json();
@@ -71,7 +74,9 @@ export async function getTrendingTokens(): Promise<Token[]> {
 
 export async function getToken(address: string): Promise<Token | undefined> {
   const tokens = await getTrendingTokens();
-  return tokens.find((t) => t.address === address) ?? MOCK_TOKENS[0];
+  // No fallback to a default token here — an unrecognized address should
+  // surface as "not found" to the caller, not silently render a different token.
+  return tokens.find((t) => t.address === address);
 }
 
 export function getMockTrades(address: string): Trade[] {

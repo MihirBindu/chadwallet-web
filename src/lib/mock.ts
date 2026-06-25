@@ -31,6 +31,14 @@ export type Holding = {
 
 const TRADERS = ["jijo", "Roman", "Zrool", "Cupsey", "Esee", "bihoz", "Limfork99", "Degener_x"];
 
+// Deterministic pseudo-random in [0, 1), seeded by index — gives the mock feed
+// varied-looking numbers that stay identical across reloads (so a screenshot
+// taken now still matches what renders on refresh), without faking persistence.
+function seededRandom(seed: number) {
+  const x = Math.sin(seed * 9301 + 49297) * 233280;
+  return x - Math.floor(x);
+}
+
 export function getKolFeed(): KolEvent[] {
   return Array.from({ length: 14 }, (_, i) => {
     const t = MOCK_TOKENS[i % MOCK_TOKENS.length];
@@ -39,7 +47,7 @@ export function getKolFeed(): KolEvent[] {
       trader: TRADERS[i % TRADERS.length],
       avatarLetter: TRADERS[i % TRADERS.length].slice(0, 1).toUpperCase(),
       side: i % 3 === 0 ? "sold" : "bought",
-      amountUsd: Math.round(80 + Math.random() * 4000) / 1,
+      amountUsd: Math.round(80 + seededRandom(i) * 4000),
       minutesAgo: i + 1,
       token: { address: t.address, symbol: t.symbol, name: t.name, priceUsd: t.priceUsd },
     };
