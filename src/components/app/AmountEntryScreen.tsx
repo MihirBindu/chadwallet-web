@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ScreenHeader from "./ScreenHeader";
 import NumericKeypad, { applyKeypadInput } from "./NumericKeypad";
+import { useAuth } from "@/lib/AuthContext";
 
 const SOL_PRICE_USD = 85.7;
 
@@ -26,6 +27,7 @@ export default function AmountEntryScreen({
   onConfirm: (amount: string) => void;
 }) {
   const [amount, setAmount] = useState("0");
+  const { requireAuth } = useAuth();
 
   const solEquivalent = unit === "USD" ? Number(amount) / SOL_PRICE_USD : 0;
   const usdEquivalent = unit === "TOKEN" ? Number(amount) * 0.0075 : 0;
@@ -58,7 +60,10 @@ export default function AmountEntryScreen({
         )}
 
         <button
-          onClick={() => onConfirm(amount)}
+          onClick={() => {
+            if (!requireAuth()) return;
+            onConfirm(amount);
+          }}
           className="w-full rounded-full bg-cw-green text-cw-navy font-semibold py-3 mb-3"
         >
           {actionLabel}

@@ -3,10 +3,12 @@
 import { useState } from "react";
 import ScreenHeader from "./ScreenHeader";
 import NumericKeypad, { applyKeypadInput } from "./NumericKeypad";
+import { useAuth } from "@/lib/AuthContext";
 
 const SOL_PRICE_USD = 85.7;
 
 export default function LaunchClient() {
+  const { requireAuth } = useAuth();
   const [step, setStep] = useState<"form" | "acquire">("form");
   const [name, setName] = useState("");
   const [ticker, setTicker] = useState("");
@@ -28,11 +30,12 @@ export default function LaunchClient() {
             <span className="text-cw-text-dim">{sol.toFixed(4)} SOL ⇅</span>
           </div>
           <button
-            onClick={() =>
+            onClick={() => {
+              if (!requireAuth()) return;
               alert(
-                `Launch ${name || "your coin"} ($${ticker || "TICKER"}) with $${amount} initial buy — requires a connected Privy wallet + on-chain launch transaction to go live.`
-              )
-            }
+                `Launch ${name || "your coin"} ($${ticker || "TICKER"}) with $${amount} initial buy — requires an on-chain launch transaction to go live.`
+              );
+            }}
             className="w-full rounded-full bg-cw-green text-cw-navy font-semibold py-3 mb-3"
           >
             Launch Coin

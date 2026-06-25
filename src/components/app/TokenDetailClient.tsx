@@ -10,6 +10,7 @@ import PriceChart from "../PriceChart";
 import PriceRangeBar from "./PriceRangeBar";
 import NumericKeypad, { applyKeypadInput } from "./NumericKeypad";
 import { fmtCompact, fmtPrice, fmtUsdShort, shortAddr } from "@/lib/format";
+import { useAuth } from "@/lib/AuthContext";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 const RANGES = ["LIVE", "1D", "1W", "1M", "3M", "1Y", "5Y"];
@@ -195,16 +196,18 @@ function ActionButton({
   symbol: string;
   full?: boolean;
 }) {
+  const { requireAuth } = useAuth();
   return (
     <button
       className={`${full ? "w-full" : "flex-1"} rounded-full py-3 font-semibold transition ${
         tone === "buy" ? "bg-cw-green text-cw-navy hover:bg-cw-green-dark" : "bg-cw-red text-white hover:opacity-90"
       }`}
-      onClick={() =>
+      onClick={() => {
+        if (!requireAuth()) return;
         alert(
-          `${label} $${amount} of ${symbol} — wiring this to a real Jupiter swap requires a signed-in Privy wallet.`
-        )
-      }
+          `${label} $${amount} of ${symbol} — wiring this to a real Jupiter swap requires a connected wallet's signature.`
+        );
+      }}
     >
       {label} {symbol}
     </button>
