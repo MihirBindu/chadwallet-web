@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ChadWallet Web
 
-## Getting Started
+Landing page + live trading view for ChadWallet, a Solana memecoin wallet/trading app.
+Built with Next.js (App Router), Tailwind CSS, Privy auth, and lightweight-charts.
 
-First, run the development server:
+## Features
+
+- Landing page mirroring the ChadWallet app screens (secure deposits, KOL/trade feed, top
+  traders, one-tap memecoin launch, portfolio tracking).
+- Rotating token banners (top + bottom) — tapping a token opens its trading view.
+- Sign in with Google/Apple via [Privy](https://privy.io), with an embedded Solana wallet
+  created automatically on first login.
+- `/trade/[address]`: trending list (left), token info + live price chart + holders + live
+  trades (middle), buy/sell panel + position (right).
+- Mobile app links wired to the real App Store / Google Play listings.
+
+## Data sources
+
+All data falls back to realistic mock data when API keys are not set, so the app is fully
+functional out of the box. Set these env vars to go live:
+
+| Var | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_PRIVY_APP_ID` | Privy app ID — enables real Google/Apple sign-in |
+| `CODEX_API_KEY` | [Codex.io](https://docs.codex.io) — live trending token data |
+| `NEXT_PUBLIC_SOLANA_RPC_URL` | [Alchemy Solana RPC](https://www.alchemy.com/rpc-api) — on-chain reads |
+| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase — optional persistence |
+
+Swap quotes are fetched live from [Jupiter](https://developers.jup.ag/docs/get-started)'s
+public quote API (no key required); executing a swap requires a connected Privy wallet and
+is the natural next step once auth is fully wired with real keys.
+
+Copy `.env.example` to `.env.local` and fill in what you have.
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploy
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deployed on [Vercel](https://vercel.com). Any push to `main` redeploys automatically once the
+repo is connected to a Vercel project.

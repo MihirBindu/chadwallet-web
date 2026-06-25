@@ -1,65 +1,107 @@
 import Image from "next/image";
+import Link from "next/link";
+import Header from "@/components/Header";
+import TokenBanner from "@/components/TokenBanner";
+import AppStoreBadges from "@/components/AppStoreBadges";
+import SignInButton from "@/components/SignInButton";
+
+const FEATURES = [
+  {
+    title: "Secure deposits & instant withdrawals",
+    body: "You own your crypto. It is safe and untouchable.",
+  },
+  {
+    title: "Take the guesswork out of trading",
+    body: "Monitor large trades and top traders, see their moves in real-time.",
+  },
+  {
+    title: "Meet top traders who win consistently",
+    body: "Follow winning strategies, grow your profit with confidence.",
+  },
+  {
+    title: "Launch memecoins in one tap",
+    body: "Turn memes, viral tweets, or your own ideas into coins instantly.",
+  },
+  {
+    title: "Track your assets in one place",
+    body: "Watch your holdings, memes, and rewards in realtime.",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+    <div className="flex flex-col min-h-screen">
+      <TokenBanner />
+      <Header />
+
+      <section className="cw-hero-gradient text-cw-navy">
+        <div className="max-w-6xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-10 items-center">
+          <div>
+            <h1 className="text-5xl font-extrabold leading-tight mb-6">
+              Secure deposits &amp; instant withdrawals
+            </h1>
+            <p className="text-lg mb-8 text-cw-navy/80">
+              You own your crypto. It is safe and untouchable. Trade Solana memecoins,
+              follow top traders, and launch your own coin in one tap.
+            </p>
+            <div className="flex flex-wrap items-center gap-4">
+              <SignInButton />
+              <Link
+                href="/trade/ChadWa11etTokenAAAAAAAAAAAAAAAAAAAAAAAAAA1"
+                className="rounded-full border border-cw-navy/30 px-6 py-3 font-semibold hover:bg-cw-navy/10 transition"
+              >
+                Open trading view
+              </Link>
+            </div>
+            <AppStoreBadges className="mt-8" />
+          </div>
+          <div className="flex justify-center">
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+              src="/brand/logo-mark.svg"
+              alt="ChadWallet"
+              width={220}
+              height={220}
+              className="rounded-3xl shadow-2xl"
+              priority
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
         </div>
-      </main>
+      </section>
+
+      <section id="features" className="max-w-6xl mx-auto px-6 py-20 space-y-16">
+        {FEATURES.map((f, i) => (
+          <div
+            key={f.title}
+            className={`grid md:grid-cols-2 gap-10 items-center ${i % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""}`}
+          >
+            <div className="rounded-2xl border border-cw-border bg-cw-panel aspect-[4/5] flex items-center justify-center text-cw-text-dim">
+              <span className="text-sm">App preview</span>
+            </div>
+            <div>
+              <h2 className="text-3xl font-bold mb-4">{f.title}</h2>
+              <p className="text-cw-text-dim text-lg">{f.body}</p>
+            </div>
+          </div>
+        ))}
+      </section>
+
+      <section id="trending" className="max-w-6xl mx-auto px-6 py-10 w-full">
+        <h2 className="text-2xl font-bold mb-2">Trending on Solana</h2>
+        <p className="text-cw-text-dim mb-4">Tap any token to open the live trading view.</p>
+      </section>
+      <TokenBanner reverse />
+
+      <section id="download" className="max-w-6xl mx-auto px-6 py-20 text-center">
+        <h2 className="text-3xl font-bold mb-4">Get ChadWallet</h2>
+        <p className="text-cw-text-dim mb-8">Available now on iOS and Android.</p>
+        <div className="flex justify-center">
+          <AppStoreBadges />
+        </div>
+      </section>
+
+      <footer className="border-t border-cw-border py-8 text-center text-sm text-cw-text-dim">
+        © {new Date().getFullYear()} ChadWallet. Built on Solana.
+      </footer>
     </div>
   );
 }

@@ -1,26 +1,61 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0b0f17;
+  --foreground: #f5f7fa;
+  --cw-navy: #0b0f17;
+  --cw-panel: #0f1726;
+  --cw-panel-2: #131d30;
+  --cw-border: #1f2c40;
+  --cw-green: #3ddc84;
+  --cw-green-dark: #1faa5e;
+  --cw-red: #ff5c5c;
+  --cw-blue-light: #4fc3ff;
+  --cw-text-dim: #8a9bb3;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-cw-navy: var(--cw-navy);
+  --color-cw-panel: var(--cw-panel);
+  --color-cw-panel-2: var(--cw-panel-2);
+  --color-cw-border: var(--cw-border);
+  --color-cw-green: var(--cw-green);
+  --color-cw-green-dark: var(--cw-green-dark);
+  --color-cw-red: var(--cw-red);
+  --color-cw-blue-light: var(--cw-blue-light);
+  --color-cw-text-dim: var(--cw-text-dim);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+.cw-hero-gradient {
+  background: linear-gradient(180deg, #3fa9ff 0%, #4fd1ff 45%, #6ee7c8 100%);
+}
+
+.cw-scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.cw-marquee-track {
+  animation: marquee 35s linear infinite;
+}
+
+.cw-marquee-track-reverse {
+  animation: marquee 35s linear infinite reverse;
 }
