@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import useSWR from "swr";
@@ -46,6 +46,18 @@ export default function HomeClient() {
   const kol = data?.kol ?? [];
   const meme = data?.meme ?? [];
 
+  // Each tab keeps its own scroll position across tab switches and reloads
+  // (the latter via sessionStorage, scoped to this browser tab).
+  const scrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const saved = sessionStorage.getItem(`cw-home-scroll-${tab}`);
+    if (scrollRef.current) scrollRef.current.scrollTop = saved ? Number(saved) : 0;
+  }, [tab, isLoading]);
+
+  const handleScroll = () => {
+    if (scrollRef.current) sessionStorage.setItem(`cw-home-scroll-${tab}`, String(scrollRef.current.scrollTop));
+  };
+
   return (
     <div className="flex flex-col flex-1">
       <div className="px-4 pt-4 pb-2 flex items-center gap-2">
@@ -85,7 +97,7 @@ export default function HomeClient() {
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto px-4 pb-4 pt-1">
+      <div ref={scrollRef} onScroll={handleScroll} className="flex-1 overflow-y-auto px-4 pb-4 pt-1">
         {isLoading ? (
           <ListSkeleton />
         ) : (
