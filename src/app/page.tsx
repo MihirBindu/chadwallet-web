@@ -47,7 +47,7 @@ export default function Home() {
             <div className="flex flex-wrap items-center gap-4">
               <SignInButton />
               <Link
-                href="/trade/ChadWa11etTokenAAAAAAAAAAAAAAAAAAAAAAAAAA1"
+                href="/app/home"
                 className="rounded-full border border-cw-navy/30 px-6 py-3 font-semibold hover:bg-cw-navy/10 transition"
               >
                 Open trading view

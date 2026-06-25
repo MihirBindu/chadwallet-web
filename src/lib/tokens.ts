@@ -25,7 +25,7 @@ export type Holder = {
   valueUsd: number;
 };
 
-const MOCK_TOKENS: Token[] = [
+export const MOCK_TOKENS: Token[] = [
   { address: "ChadWa11etTokenAAAAAAAAAAAAAAAAAAAAAAAAAA1", symbol: "CHAD", name: "ChadWallet", imageUrl: "/brand/logo-mark.svg", priceUsd: 0.04231, change24h: 12.4, marketCapUsd: 4231000, volume24hUsd: 982000, liquidityUsd: 312000, holders: 8421 },
   { address: "BonkSo1ana11111111111111111111111111111112", symbol: "BONK", name: "Bonk", imageUrl: "/brand/logo-mark.svg", priceUsd: 0.0000234, change24h: -3.2, marketCapUsd: 1540000000, volume24hUsd: 84000000, liquidityUsd: 12000000, holders: 712000 },
   { address: "Wif5o1ana11111111111111111111111111111113", symbol: "WIF", name: "dogwifhat", imageUrl: "/brand/logo-mark.svg", priceUsd: 1.92, change24h: 5.8, marketCapUsd: 1920000000, volume24hUsd: 102000000, liquidityUsd: 18000000, holders: 320000 },

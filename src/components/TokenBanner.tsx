@@ -15,7 +15,7 @@ function TokenChip({ token }: { token: Token }) {
   const up = token.change24h >= 0;
   return (
     <Link
-      href={`/trade/${token.address}`}
+      href={`/app/token/${token.address}`}
       className="flex items-center gap-2 rounded-full border border-cw-border bg-cw-panel px-4 py-2 mx-2 shrink-0 transition hover:border-cw-green"
     >
       <span className="h-6 w-6 rounded-full bg-cw-panel-2 flex items-center justify-center text-xs font-bold text-cw-green">
