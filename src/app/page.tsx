@@ -4,27 +4,40 @@ import Header from "@/components/Header";
 import TokenBanner from "@/components/TokenBanner";
 import AppStoreBadges from "@/components/AppStoreBadges";
 import SignInButton from "@/components/SignInButton";
+import PhoneFrame from "@/components/PhoneFrame";
+import {
+  DepositMockup,
+  KolFeedMockup,
+  TopTraderMockup,
+  LaunchCoinMockup,
+  AssetsMockup,
+} from "@/components/FeatureMockups";
 
 const FEATURES = [
   {
     title: "Secure deposits & instant withdrawals",
     body: "You own your crypto. It is safe and untouchable.",
+    Mockup: DepositMockup,
   },
   {
     title: "Take the guesswork out of trading",
     body: "Monitor large trades and top traders, see their moves in real-time.",
+    Mockup: KolFeedMockup,
   },
   {
     title: "Meet top traders who win consistently",
     body: "Follow winning strategies, grow your profit with confidence.",
+    Mockup: TopTraderMockup,
   },
   {
     title: "Launch memecoins in one tap",
     body: "Turn memes, viral tweets, or your own ideas into coins instantly.",
+    Mockup: LaunchCoinMockup,
   },
   {
     title: "Track your assets in one place",
     body: "Watch your holdings, memes, and rewards in realtime.",
+    Mockup: AssetsMockup,
   },
 ];
 
@@ -74,8 +87,10 @@ export default function Home() {
             key={f.title}
             className={`grid md:grid-cols-2 gap-10 items-center ${i % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""}`}
           >
-            <div className="rounded-2xl border border-cw-border bg-cw-panel aspect-[4/5] flex items-center justify-center text-cw-text-dim">
-              <span className="text-sm">App preview</span>
+            <div className="max-w-xs mx-auto w-full">
+              <PhoneFrame>
+                <f.Mockup />
+              </PhoneFrame>
             </div>
             <div>
               <h2 className="text-3xl font-bold mb-4">{f.title}</h2>
