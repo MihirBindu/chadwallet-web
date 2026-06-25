@@ -29,6 +29,11 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-cw-navy text-foreground">
+        <noscript>
+          <div style={{ padding: "16px", textAlign: "center", background: "#0f1726", color: "#f5f7fa" }}>
+            ChadWallet requires JavaScript to run. Please enable it in your browser settings.
+          </div>
+        </noscript>
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

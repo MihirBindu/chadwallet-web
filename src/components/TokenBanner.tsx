@@ -11,6 +11,21 @@ function fmtUsd(n: number) {
   return `$${n.toFixed(n < 1 ? 4 : 2)}`;
 }
 
+function BannerSkeleton() {
+  return (
+    <div className="w-full overflow-hidden border-y border-cw-border bg-cw-navy/80 py-3">
+      <div className="flex w-max">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div
+            key={i}
+            className="h-9 w-32 rounded-full border border-cw-border bg-cw-panel mx-2 shrink-0 animate-pulse"
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function TokenChip({ token }: { token: Token }) {
   const up = token.change24h >= 0;
   return (
@@ -21,7 +36,7 @@ function TokenChip({ token }: { token: Token }) {
       <span className="h-6 w-6 rounded-full bg-cw-panel-2 flex items-center justify-center text-xs font-bold text-cw-green">
         {token.symbol.slice(0, 1)}
       </span>
-      <span className="font-semibold text-sm">{token.symbol}</span>
+      <span className="font-semibold text-sm max-w-[120px] truncate">{token.symbol}</span>
       <span className="text-sm text-cw-text-dim">{fmtUsd(token.priceUsd)}</span>
       <span className={`text-sm font-medium ${up ? "text-cw-green" : "text-cw-red"}`}>
         {up ? "+" : ""}
@@ -37,7 +52,7 @@ export default function TokenBanner({ reverse = false }: { reverse?: boolean }) 
     fallbackData: { tokens: [] },
   });
   const tokens = data?.tokens ?? [];
-  if (tokens.length === 0) return <div className="h-14" />;
+  if (tokens.length === 0) return <BannerSkeleton />;
   const loop = [...tokens, ...tokens];
 
   return (
