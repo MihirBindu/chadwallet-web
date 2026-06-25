@@ -3,7 +3,7 @@
 import { useAuth } from "@/lib/AuthContext";
 
 export default function SignInButton({ className = "" }: { className?: string }) {
-  const { ready, authenticated, userLabel, login, logout, error } = useAuth();
+  const { ready, authenticated, userLabel, login, logout, error, loggingIn } = useAuth();
 
   if (!ready) {
     return (
@@ -28,10 +28,11 @@ export default function SignInButton({ className = "" }: { className?: string })
   return (
     <div className="flex flex-col gap-1">
       <button
-        className={`rounded-full bg-cw-green px-6 py-3 font-semibold text-cw-navy transition hover:bg-cw-green-dark ${className}`}
+        className={`rounded-full bg-cw-green px-6 py-3 font-semibold text-cw-navy transition hover:bg-cw-green-dark disabled:opacity-60 ${className}`}
         onClick={login}
+        disabled={loggingIn}
       >
-        Sign in
+        {loggingIn ? "Signing in..." : "Sign in"}
       </button>
       {error && <span className="text-xs text-cw-red">{error}</span>}
     </div>

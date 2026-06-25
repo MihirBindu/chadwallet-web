@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ScreenHeader from "./ScreenHeader";
 import NumericKeypad, { applyKeypadInput } from "./NumericKeypad";
 import { useAuth } from "@/lib/AuthContext";
@@ -27,7 +27,13 @@ export default function AmountEntryScreen({
   onConfirm: (amount: string) => void;
 }) {
   const [amount, setAmount] = useState("0");
-  const { requireAuth } = useAuth();
+  const { requireAuth, authenticated } = useAuth();
+
+  // Clear any in-progress amount if the user logs out mid-action, so signing
+  // back in later doesn't resume with a stale typed value.
+  useEffect(() => {
+    if (!authenticated) setAmount("0");
+  }, [authenticated]);
 
   const solEquivalent = unit === "USD" ? Number(amount) / SOL_PRICE_USD : 0;
   const usdEquivalent = unit === "TOKEN" ? Number(amount) * 0.0075 : 0;

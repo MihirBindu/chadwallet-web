@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ScreenHeader from "./ScreenHeader";
 import NumericKeypad, { applyKeypadInput } from "./NumericKeypad";
 import { useAuth } from "@/lib/AuthContext";
@@ -8,12 +8,25 @@ import { useAuth } from "@/lib/AuthContext";
 const SOL_PRICE_USD = 85.7;
 
 export default function LaunchClient() {
-  const { requireAuth } = useAuth();
+  const { requireAuth, authenticated } = useAuth();
   const [step, setStep] = useState<"form" | "acquire">("form");
   const [name, setName] = useState("");
   const [ticker, setTicker] = useState("");
   const [social, setSocial] = useState("");
   const [amount, setAmount] = useState("10");
+
+  // If a signed-in user logs out (e.g. mid-acquire), drop them back to the
+  // form and clear the stale amount. A user who was never signed in is still
+  // allowed to browse both steps freely — only an actual log-out transition
+  // should reset anything here.
+  const wasAuthenticated = useRef(authenticated);
+  useEffect(() => {
+    if (wasAuthenticated.current && !authenticated) {
+      setStep("form");
+      setAmount("10");
+    }
+    wasAuthenticated.current = authenticated;
+  }, [authenticated]);
 
   if (step === "acquire") {
     const sol = (Number(amount) || 0) / SOL_PRICE_USD;

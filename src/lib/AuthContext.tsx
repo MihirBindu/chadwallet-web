@@ -9,11 +9,15 @@ export type AuthState = {
   userLabel: string | null;
   walletAddress: string | null;
   walletPending: boolean;
+  /** True while a login popup is open/in-flight; used to debounce repeated clicks. */
+  loggingIn: boolean;
   error: string | null;
   login: () => void;
   logout: () => void;
   /** Returns true if the user is signed in. If not, triggers sign-in and returns false. */
   requireAuth: () => boolean;
+  /** Manually retries embedded wallet creation if it appears stuck. */
+  retryWalletCreation: () => void;
 };
 
 const stub: AuthState = {
@@ -23,6 +27,7 @@ const stub: AuthState = {
   userLabel: null,
   walletAddress: null,
   walletPending: false,
+  loggingIn: false,
   error: null,
   login: () => {
     alert(
@@ -34,6 +39,7 @@ const stub: AuthState = {
     stub.login();
     return false;
   },
+  retryWalletCreation: () => {},
 };
 
 export const AuthContext = createContext<AuthState>(stub);

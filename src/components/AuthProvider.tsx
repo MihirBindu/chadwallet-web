@@ -41,22 +41,32 @@ function AuthBridge({ children }: { children: React.ReactNode }) {
   const { ready, authenticated, user, logout } = usePrivy();
   const { wallets } = useSolanaWallets();
   const [error, setError] = useState<string | null>(null);
+  const [loggingIn, setLoggingIn] = useState(false);
 
   const { login } = useLogin({
     onComplete: ({ isNewUser, wasAlreadyAuthenticated }) => {
       setError(null);
+      setLoggingIn(false);
       // Only redirect on a real sign-in action, not when the user landed on
       // a page already authenticated (onComplete fires immediately for them too).
       if (wasAlreadyAuthenticated) return;
       router.push(isNewUser ? "/app/home?welcome=1" : "/app/home");
     },
     onError: (err) => {
-      // "exited_auth_flow" = user closed the popup/cancelled — not a real error.
-      if (err === "exited_auth_flow") {
+      setLoggingIn(false);
+      // "exited_auth_flow" = user closed the popup. "oauth_user_denied" = user
+      // declined the Google/Apple consent screen. Both are user choices, not failures.
+      if (err === "exited_auth_flow" || err === "oauth_user_denied") {
         setError(null);
         return;
       }
-      setError("Sign-in failed. Please try again.");
+      // "client_request_timeout" most often indicates a dropped connection rather
+      // than a rejected login, so it gets a more specific message.
+      setError(
+        err === "client_request_timeout"
+          ? "Sign-in timed out — check your connection and try again."
+          : "Sign-in failed. Please try again."
+      );
     },
   });
 
@@ -69,6 +79,15 @@ function AuthBridge({ children }: { children: React.ReactNode }) {
     user?.apple?.email ??
     (authenticated ? "Account" : null);
 
+  const startLogin = () => {
+    // Guards against double-firing the OAuth popup on rapid repeated clicks
+    // before Privy has transitioned out of the pending state.
+    if (loggingIn) return;
+    setLoggingIn(true);
+    setError(null);
+    login();
+  };
+
   const value: AuthState = useMemo(
     () => ({
       configured: true,
@@ -77,20 +96,24 @@ function AuthBridge({ children }: { children: React.ReactNode }) {
       userLabel,
       walletAddress: solanaWallet?.address ?? null,
       walletPending,
+      loggingIn,
       error,
-      login: () => {
-        setError(null);
-        login();
-      },
+      login: startLogin,
       logout,
       requireAuth: () => {
         if (authenticated) return true;
-        setError(null);
-        login();
+        startLogin();
         return false;
       },
+      retryWalletCreation: () => {
+        // Reloading re-runs Privy's `createOnLogin: "users-without-wallets"` provisioning
+        // for the already-authenticated session — the safest retry without a dedicated
+        // wallet-creation API call.
+        window.location.reload();
+      },
     }),
-    [ready, authenticated, userLabel, solanaWallet, walletPending, error, login, logout]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [ready, authenticated, userLabel, solanaWallet, walletPending, loggingIn, error, login, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

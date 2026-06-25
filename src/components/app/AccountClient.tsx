@@ -1,16 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import type { Holding } from "@/lib/mock";
 import PriceChart from "../PriceChart";
 import { fmtUsdShort, shortAddr } from "@/lib/format";
 import { useAuth } from "@/lib/AuthContext";
 
+const WALLET_STUCK_THRESHOLD_MS = 8000;
+
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export default function AccountClient() {
-  const { ready, authenticated, login, walletAddress, walletPending, userLabel } = useAuth();
+  const { ready, authenticated, login, walletAddress, walletPending, userLabel, retryWalletCreation } = useAuth();
 
   const { data } = useSWR<{
     holdings: Holding[];
@@ -21,6 +24,18 @@ export default function AccountClient() {
   const holdings = data?.holdings ?? [];
   const rewards = data?.rewards;
   const balanceUsd = data?.balanceUsd ?? 0;
+
+  // Only offer a retry once wallet creation has had a real chance to finish —
+  // avoids flashing a "stuck" affordance during the normal brief provisioning window.
+  const [walletSeemsStuck, setWalletSeemsStuck] = useState(false);
+  useEffect(() => {
+    if (!walletPending) {
+      setWalletSeemsStuck(false);
+      return;
+    }
+    const timer = setTimeout(() => setWalletSeemsStuck(true), WALLET_STUCK_THRESHOLD_MS);
+    return () => clearTimeout(timer);
+  }, [walletPending]);
 
   return (
     <div className="flex flex-col flex-1">
@@ -54,7 +69,14 @@ export default function AccountClient() {
             <div className="text-right">
               <div className="text-xs text-cw-text-dim truncate max-w-[120px]">{userLabel}</div>
               {walletPending ? (
-                <span className="text-xs text-cw-text-dim">Creating wallet...</span>
+                <span className="flex items-center gap-2 text-xs text-cw-text-dim">
+                  Creating wallet...
+                  {walletSeemsStuck && (
+                    <button onClick={retryWalletCreation} className="text-cw-green underline">
+                      Retry
+                    </button>
+                  )}
+                </span>
               ) : walletAddress ? (
                 <span className="rounded-full bg-cw-panel-2 px-2 py-0.5 text-xs text-cw-text-dim">
                   {shortAddr(walletAddress)}
